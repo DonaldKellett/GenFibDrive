@@ -58,7 +58,7 @@ Here, Read means that `Get-Content` is a supported operation and Write means tha
 
 - If the writable items are overwritten with the same value, `Get-Content Sequence` will still re-compute the sequence once. Perhaps make it so that overwriting a writable item with the same value is not treated as a modification
 - Support more generalizations. Currently, the first `n` terms of an `n`th order Fibonacci sequence is hardcoded with the first `n` terms being `F(k) = 0` (when `k < n - 1`) and `F(n - 1) = 1`. Maybe make it so the first `n` terms can be specified by the user
-- 
-- ## License
+
+## License
 
 [MIT](./LICENSE)
