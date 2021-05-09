@@ -18,8 +18,47 @@ PS> Set-ExecutionPolicy RemoteSigned
 
 Please be aware of the potential security implications of running such a command before doing so; I will not be held responsible for any damages to your system that may result.
 
-TODO
+The module in this repo depends on SHiPS so you will need to install it first (if you haven't done so already) by running the following PowerShell command as administrator:
 
-## License
+```powershell
+PS> Install-Module -Name SHiPS
+```
+
+Answer `Y` for any questions that may come up.
+
+Then, assuming your copy of this repo is located at `C:\path\to\your\GenFibProvider`, run the following PowerShell commands in an existing session or start a new session (administrator rights not required):
+
+```powershell
+PS> Import-Module SHiPS
+PS> Import-Module C:\path\to\your\GenFibProvider\GenFibProvider.psm1
+```
+
+Now you can create a new PSDrive `GF` (or any name to your liking) and navigate to it:
+
+```powershell
+PS> New-PSDrive -Name GF -PSProvider SHiPS -Root GenFibProvider#GenFib
+PS> Set-Location GF:
+```
+
+You should then see the following child items under `GF:\` by running `Get-ChildItem`:
+
+- `Order` (Read-Write): The order of the [generalized Fibonacci sequence](https://en.wikipedia.org/wiki/Generalizations_of_Fibonacci_numbers#Fibonacci_numbers_of_higher_order) as a non-negative integer. Defaults to `2`
+- `Start` (Read-Write): The (zero-based) starting index of sequence as a non-negative integer, e.g. for the classic Fibonacci sequence with order 2, we define `F(0) = 0` and `F(1) = 1`. Defaults to `0`
+- `Count` (Read-Write): The number of items to return from the sequence, starting from `Start`. Defaults to `10`
+- `Sequence` (Read-Only): The generated sequence based on the three items above with type `int[]`, e.g. it is `0, 1, 1, 2, 3, 5, 8, 13, 21, 34` with default parameters
+
+Here, Read means that `Get-Content` is a supported operation and Write means that `Set-Content` is a supported operation.
+
+## Features
+
+- Support for edge cases such as order 0 (where `F(n) = 0` for all `n`) and order 1 (where `F(n) = 1` for all `n`) Fibonacci sequences. Why these definitions make sense is left to the reader as an exercise
+- Caching to avoid recomputing the entire sequence if none of the writable items have been written to between invocations of `Get-Content Sequence`
+
+## Possible improvements
+
+- If the writable items are overwritten with the same value, `Get-Content Sequence` will still re-compute the sequence once. Perhaps make it so that overwriting a writable item with the same value is not treated as a modification
+- Support more generalizations. Currently, the first `n` terms of an `n`th order Fibonacci sequence is hardcoded with the first `n` terms being `F(k) = 0` (when `k < n - 1`) and `F(n - 1) = 1`. Maybe make it so the first `n` terms can be specified by the user
+- 
+- ## License
 
 [MIT](./LICENSE)
